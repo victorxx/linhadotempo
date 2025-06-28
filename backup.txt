@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Linha do tempo da história de São Paulo, com principais fatos e notícias atuais sobre a cidade." />
+    <meta name="keywords" content="São Paulo, História, Linha do tempo, Notícias, Cultura, SP" />
+    <meta name="author" content="Seu Nome" />
+    <title>Linha do Tempo de São Paulo</title>
+    <style>
+        /* Reset básico */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+            #iframe-wrapper {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      width: 100%;
+      max-width: 400px;
+      height: 50vh; /* Altura relativa no desktop */
+      max-height: 400px;
+      z-index: 9999;
+      border-radius: 10px 0 0 0;
+      box-shadow: -2px -2px 12px rgba(0,0,0,0.3);
+      background-color: #fff;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #iframe-fixo {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 10px 0 0 0;
+      display: block;
+    }
+
+    #close-btn {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      font-size: 20px;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      line-height: 32px;
+      text-align: center;
+      z-index: 10000;
+      display: none; /* Escondido inicialmente */
+      transition: background-color 0.3s ease;
+    }
+
+    #close-btn:hover {
+      background: rgba(255, 0, 0, 0.8);
+    }
+
+    /* MOBILE */
+    @media (max-width: 600px) {
+      #iframe-wrapper {
+        max-width: 100%;
+        height: 400px; /* Altura fixa menor */
+        border-radius: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+
+      #iframe-fixo {
+        border-radius: 0;
+      }
+
+      #close-btn {
+        top: 6px;
+        right: 8px;
+        width: 28px;
+        height: 28px;
+        font-size: 18px;
+        line-height: 28px;
+      }
+    }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: #0055a5;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        /* Linha do tempo */
+        .timeline {
+            position: relative;
+            margin: 40px 0;
+            padding-left: 40px;
+            border-left: 4px solid #0055a5;
+        }
+
+        .event {
+            position: relative;
+            margin-bottom: 30px;
+            padding-left: 20px;
+        }
+
+        .event::before {
+            content: "";
+            position: absolute;
+            left: -14px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            background-color: #0055a5;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .event h3 {
+            font-size: 1.3rem;
+            color: #0055a5;
+            margin-bottom: 6px;
+        }
+
+        .event time {
+            font-weight: bold;
+            color: #777;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .event p {
+            font-size: 1rem;
+            color: #444;
+        }
+
+        /* Seção notícias */
+        #noticias {
+            margin-top: 50px;
+        }
+
+        #noticias h2 {
+            color: #0055a5;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #0055a5;
+            padding-bottom: 6px;
+        }
+
+        .noticia-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .noticia-item:hover {
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+        }
+
+        .noticia-item h3 {
+            margin-bottom: 6px;
+            color: #222;
+        }
+
+        .noticia-item p {
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        /* Propaganda estilizada */
+        #propaganda {
+            background-color: #e0f0ff;
+            border: 2px solid #0055a5;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,85,165,0.2);
+            transition: background-color 0.3s ease;
+        }
+
+        #propaganda a {
+            color: #0055a5;
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.3s ease;
+        }
+
+        #propaganda a:hover,
+        #propaganda a:focus {
+            color: #003d7a;
+            text-decoration: underline;
+            outline: none;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+            header h1 {
+                font-size: 2rem;
+            }
+            #propaganda {
+                font-size: 1rem;
+                padding: 12px 15px;
+                margin-bottom: 20px;
+            }
+        }
+         .whatsapp-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #25D366;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(37, 211, 102, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    z-index: 1000;
+    transition: background-color 0.3s ease;
+  }
+  .whatsapp-button:hover,
+  .whatsapp-button:focus {
+    background-color: #1ebe57;
+    outline: none;
+  }
+  #aumentar{
+    font-size: xx-large;
+  }
+    </style>
+</head>
+<body>
+    <div id="propaganda" aria-label="Propaganda">
+        <a href="https://www.larissasaib.com.br/" target="_blank" rel="noopener noreferrer">
+            DRA LARISSA SAIB - Clínica de Saúde e Bem-estar
+        </a>
+        <br>
+        <br>
+        <a href="https://geocredibnkvitoria.com/">CRÉDITO PESSOAL</a>
+        <br>
+        <br>
+        <br>
+
+<a href="https://wa.me/5527999497001" target="_blank" rel="noopener noreferrer" aria-label="Contato pelo WhatsApp"
+   style="display: inline-flex; align-items: center; background-color: #25D366; color: white; font-weight: 700;
+          padding: 12px 20px; border-radius: 30px; text-decoration: none; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.4);
+          transition: background-color 0.3s ease;">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" viewBox="0 0 24 24" style="margin-right: 10px;">
+    <path d="M20.52 3.48A11.92 11.92 0 0 0 3.48 20.52l-1.3 4.74 4.87-1.27A11.9 11.9 0 1 0 20.52 3.48Zm-8.02 15.23c-2.57 0-4.9-1.34-6.18-3.53l-.44-.74 3.61-1.1.3.38c.55.7 1.2 1.31 1.96 1.8l.17.1a4.74 4.74 0 0 0 2.4.6c1.55 0 2.4-1 .2-2.18l-.12-.07-1.8-1.28-1.25-1.8-.12-.18a.32.32 0 0 1 .14-.46l.22-.1.74-.3a.33.33 0 0 1 .36.06l1.58 1.58.46-.24a.33.33 0 0 1 .42.08l2.2 3.23a.34.34 0 0 1-.06.44l-3.05 2.56a5.27 5.27 0 0 1-2.4.6Z"/>
+  </svg>
+  Fale conosco no WhatsApp CONSÓRCIOS E SEGUROS
+</a>
+
+<br>
+<br>
+<div id="aumentar">
+<a href="https://central.dokehost.com.br/aff.php?aff=90">AS MELHROES VPS DO MERCADO CONFIRA</a>
+</div>
+
+
+    </div>
+
+    <header>
+        <h1>Linha do Tempo de São Paulo</h1>
+        <p>Principais acontecimentos e notícias da maior cidade do Brasil</p>
+    </header>
+
+    <section class="timeline" aria-label="Linha do tempo da história de São Paulo">
+        <article class="event">
+            <time datetime="1554-01-25">25 de Janeiro de 1554</time>
+            <h3>Fundação da cidade de São Paulo</h3>
+            <p>A cidade foi fundada pelos padres jesuítas Manuel da Nóbrega e José de Anchieta, com a fundação do colégio de São Paulo de Piratininga.</p>
+        </article>
+        <div id="iframe-wrapper" role="region" aria-label="Anúncio fixo">
+  <button id="close-btn" aria-label="Fechar anúncio">×</button>
+  <iframe
+    id="iframe-fixo"
+    src="modelo.html"
+    title="Anúncio Fixo Responsivo"
+    loading="lazy"
+    ></iframe>
+</div>
+
+<script>
+  // Espera 10 segundos para exibir o botão de fechar
+  setTimeout(() => {
+    document.getElementById("close-btn").style.display = "block";
+  }, 10000);
+
+  // Ação do botão para fechar o iframe
+  document.getElementById("close-btn").addEventListener("click", () => {
+    document.getElementById("iframe-wrapper").style.display = "none";
+  });
+</script>
+
+        <article class="event">
+            <time datetime="1711">1711</time>
+            <h3>Elevação à Vila</h3>
+            <p>São Paulo foi elevada à condição de vila, tornando-se um importante centro administrativo na região.</p>
+        </article>
+
+        <article class="event">
+            <time datetime="1822">1822</time>
+            <h3>Proclamação da Independência</h3>
+            <p>A cidade participou ativamente dos movimentos que levaram à independência do Brasil.</p>
+        </article>
+
+        <article class="event">
+            <time datetime="1891">1891</time>
+            <h3>São Paulo torna-se capital do estado</h3>
+            <p>Com a nova constituição do estado de São Paulo, a cidade foi confirmada como sua capital.</p>
+        </article>
+
+        <article class="event">
+            <time datetime="1930">1930</time>
+            <h3>Industrialização acelerada</h3>
+            <p>São Paulo começa um processo intenso de industrialização e crescimento populacional, transformando-se em um polo econômico.</p>
+        </article>
+
+        <article class="event">
+            <time datetime="2014">2014</time>
+            <h3>Maior metrópole do Brasil</h3>
+            <p>São Paulo consolidou-se como a maior cidade do Brasil e uma das maiores do mundo, destacando-se em economia, cultura e diversidade.</p>
+        </article>
+    </section>
+
+    <section id="noticias" aria-label="Notícias recentes de São Paulo">
+        <h2>Notícias Recentes de São Paulo</h2>
+
+        <article class="noticia-item">
+            <h3>SP anuncia nova linha de metrô para 2027</h3>
+            <p>Governo estadual confirmou investimento de R$ 10 bilhões para ampliar o transporte público na capital paulista.</p>
+        </article>
+
+        <article class="noticia-item">
+            <h3>Festival cultural movimenta São Paulo neste mês</h3>
+            <p>Eventos de música, teatro e gastronomia ocorrem em diversos bairros da cidade até o final do mês.</p>
+        </article>
+
+        <article class="noticia-item">
+            <h3>Projeto de revitalização da Avenida Paulista é aprovado</h3>
+            <p>Medidas para aumentar áreas verdes e melhorar o trânsito foram aprovadas pela prefeitura.</p>
+        </article>
+
+
+
+
+        
+<section>
+  <article class="noticia-item">
+    <h3>Inauguração da Linha 6 do Metrô</h3>
+    <p>Foi inaugurada a nova extensão da Linha 6-Laranja do metrô de São Paulo, conectando a zona norte à região central, facilitando o transporte público.</p>
+    <small>15/01/2024 - Prefeitura de São Paulo</small>
+  </article>
+
+  <article class="noticia-item">
+    <h3>Plano de Combate à Poluição do Ar</h3>
+    <p>Prefeitura anuncia medidas para reduzir a poluição atmosférica, incluindo restrição ao uso de veículos antigos e aumento da fiscalização industrial.</p>
+    <small>22/02/2024 - Secretaria do Meio Ambiente</small>
+  </article>
+
+  <article class="noticia-item">
+    <h3>São Paulo Sedia Conferência Internacional de Tecnologia</h3>
+    <p>Evento reúne especialistas do mundo todo para discutir inovações em inteligência artificial e sustentabilidade.</p>
+    <small>10/03/2024 - Agência São Paulo de Desenvolvimento</small>
+  </article>
+
+  <article class="noticia-item">
+    <h3>Campanha de Vacinação Contra Gripe Aumenta Cobertura</h3>
+    <p>Campanha municipal atinge 85% da população-alvo, um recorde para os últimos cinco anos.</p>
+    <small>05/04/2024 - Secretaria de Saúde</small>
+  </article>
+
+  <article class="noticia-item">
+    <h3>Reforma do Parque Ibirapuera Concluída</h3>
+    <p>Área verde revitalizada com novas pistas de caminhada, espaços culturais e iluminação moderna.</p>
+    <small>20/05/2024 - Prefeitura de São Paulo</small>
+  </article>
+
+  <article class="noticia-item">
+    <h3>Aumento no Transporte Público</h3>
+    <p>Linhas de ônibus ganham 150 veículos novos com ar-condicionado e tecnologia para acessibilidade.</p>
+    <small>30/06/2024 - SPTrans</small>
+  </article>
+
+  <article class="noticia-item">
+    <h3>São Paulo na Copa do Mundo Feminina</h3>
+    <p>São Paulo recebe jogos importantes da Copa do Mundo Feminina, movimentando o turismo e a economia local.</p>
+    <small>12/08/2024 - FIFA / Governo Estadual</small>
+  </article>
+
+  <article class="noticia-item">
+    <h3>Morte de Silvio Santos</h3>
+    <p>O apresentador Silvio Santos faleceu aos 93 anos em São Paulo devido a complicações de uma broncopneumonia após infecção por influenza.</p>
+    <small>17/08/2024 - Wikipedia</small>
+  </article>
+
+  <article class="noticia-item">
+    <h3>Tempestade em São Paulo</h3>
+    <p>Uma tempestade com ventos de até 107,6 km/h causou destruição e apagão em grande parte da cidade, afetando 2,1 milhões de clientes.</p>
+    <small>11/10/2024 - Wikipedia</small>
+  </article>
+
+  <article class="noticia-item">
+    <h3>Chuvas Afetam Campanhas Eleitorais</h3>
+    <p>As chuvas interromperam as agendas dos candidatos Ricardo Nunes e Guilherme Boulos, com críticas sobre a gestão das enchentes.</p>
+    <small>12/10/2024 - Folha de S.Paulo</small>
+  </article>
+
+  <article class="noticia-item">
+    <h3>Turismo em Alta</h3>
+    <p>São Paulo registrou o melhor desempenho turístico da década, com ocupação hoteleira média de 71,25% e recorde de 78 milhões de passageiros nos aeroportos.</p>
+    <small>26/11/2024 - Folha de S.Paulo</small>
+  </article>
+
+  <article class="noticia-item">
+    <h3>Remodelação do Aeroporto de Congonhas</h3>
+    <p>Aena contratou a HTB para reformar o aeroporto de Congonhas com investimento de R$ 2,4 bilhões, visando ampliar a capacidade e modernizar a infraestrutura.</p>
+    <small>02/12/2024 - El País</small>
+  </article>
+
+  <article class="noticia-item">
+    <h3>Acidente Aéreo em São Paulo</h3>
+    <p>Um avião Beech F90 King Air caiu sobre um ônibus na Avenida Marquês de São Vicente, resultando em duas mortes e várias feridos.</p>
+    <small>07/02/2025 - People</small>
+  </article>
+
+  <article class="noticia-item">
+    <h3>Projeto de revitalização da Avenida Paulista é aprovado</h3>
+    <p>Medidas para aumentar áreas verdes e melhorar o trânsito foram aprovadas pela prefeitura.</p>
+    <small>Data não informada</small>
+  </article>
+
+
+
+  <section>
+  <article class="noticia-item">
+    <h3>Ampliação do Parque da Juventude é concluída</h3>
+    <p>O Parque da Juventude recebeu novas áreas esportivas, playgrounds e espaços culturais para a população.</p>
+    <small>15/09/2024 - Prefeitura de São Paulo</small>
+  </article>
+
+  <article class="noticia-item">
+    <h3>SP ganha programa de bicicletas elétricas compartilhadas</h3>
+    <p>Prefeitura lançou programa para incentivar o uso de bicicletas elétricas, com mais de 2.000 unidades espalhadas pela cidade.</p>
+    <small>01/10/2024 - Secretaria de Mobilidade</small>
+  </article>
+
+  <article class="noticia-item">
+    <h3>Criação de novos corredores verdes na cidade</h3>
+    <p>Projeto prevê implantação de corredores verdes para melhorar a qualidade do ar e conectar áreas verdes da cidade.</p>
+    <small>20/10/2024 - Secretaria do Meio Ambiente</small>
+  </article>
+
+  <article class="noticia-item">
+    <h3>São Paulo recebe festival internacional de cinema</h3>
+    <p>O festival exibirá mais de 200 filmes de diversos países, promovendo a cultura e o turismo na capital paulista.</p>
+    <small>05/11/2024 - Secretaria de Cultura</small>
+  </article>
+
+  <article class="noticia-item">
+    <h3>Nova linha de ônibus com tecnologia limpa é inaugurada</h3>
+    <p>Lançamento da linha de ônibus 100% elétrica, visando reduzir a poluição e modernizar o transporte público.</p>
+    <small>18/11/2024 - SPTrans</small>
+  </article>
+
+  <article class="noticia-item">
+    <h3>Campanha de conscientização sobre descarte de lixo eletrônico</h3>
+    <p>Iniciativa da prefeitura para incentivar a população a descartar corretamente equipamentos eletrônicos, evitando poluição.</p>
+    <small>30/11/2024 - Secretaria do Meio Ambiente</small>
+  </article>
+
+  <article class="noticia-item">
+    <h3>Investimento em segurança pública aumenta em São Paulo</h3>
+    <p>Foram destinados R$ 300 milhões para reforço policial, novas câmeras de monitoramento e programas de prevenção.</p>
+    <small>10/12/2024 - Secretaria de Segurança</small>
+  </article>
+
+
+</section>
+
+
+    
+
+    <footer>
+
+    </footer>
+</body>
+</html>
